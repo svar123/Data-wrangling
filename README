@@ -1,4 +1,5 @@
 
+
 README          : this file
 Capture.png     : san jose map image
 Data.ipynb      : parse,clean,shape data and build csv files from osm file
