@@ -1,0 +1,19 @@
+
+README          : this file
+Capture.png     : san jose map image
+Data.ipynb      : parse,clean,shape data and build csv files from osm file
+NewReport.ipynb : project report
+NewReport.html  : project report (html)
+sanjose.db      : database of csv files
+san-jose_california.osm : osm file
+csv_db.py       : python file to generate database from csv files
+
+csv files created:
+-------------------
+nodes.csv       : csv file
+nodes_tags.csv  : csv file
+ways.csv        : csv file
+ways_nodes.csv  : csv file
+ways_tags.csv   : csv file
+
+
