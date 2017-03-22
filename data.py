@@ -161,10 +161,10 @@ import re
 import xml.etree.cElementTree as ET
 
 import unicodedata
-
+import clean
 
 from collections import defaultdict
-import re
+
 
 import cerberus
 
@@ -193,130 +193,6 @@ WAY_FIELDS = ['id', 'user', 'uid', 'version', 'changeset', 'timestamp']
 WAY_TAGS_FIELDS = ['id', 'key', 'value', 'type']
 WAY_NODES_FIELDS = ['id', 'node_id', 'position']
 
-
-mapping_addr = { "St": "Street",
-            "St.": "Street",
-            "Ave": "Avenue",
-            "Rd." : "Road",
-            "Blvd" : "Boulevard",
-            "Dr" : "Drive",
-            "Hwy": "Highway",
-            "Rd" : "Road",
-            u'Montaña':"Montana",
-            "Ct" : "Court",
-            "Ln" : "Lane"
-            }
-
-mapping_city = { "SUnnyvale" : "Sunnyvale",
-                 "Los Gato" : "Los Gatos",
-                 u'San Jos\xe9' : "San Jose",
-                 "cupertino" : "Cupertino",
-                 "sunnyvale": "Sunnyvale",
-                 "san Jose": "San Jose",
-                 "san jose": "San Jose",
-                 "Los Gatos, CA": "Los Gatos",
-                 "Mt Hamilton": "Mount Hamilton"
-                 }
-direction_addr = {'N':'North','S':'South','E':'East','W':'West','N.':'North','S.':'South','E.':'East','W.':'West'}
-expand_addr = {"Mt Hamilton Rd": "Mount Hamilton Road"}
-street_num ={'1st':'First','2nd':'Second','3rd':'Third'}
-
-
-############################################################################
-#
-#     These are the four cleaning functions
-# update_addr_name(),update_city_name(),update_postcode(),update_phone()
-# print name,' ----> ',newname is for debugging
-#
-############################################################################
-
-# update the names of streets using 'mapping_adr','direction_addr',
-# 'expand_addr' and 'street_num' dictionaries
-
-def update_addr_name(name, mapping):
-    newname = ''
-    #replace N with North,S with South etc.
-    if name.split()[0] in direction_addr:
-        for key,val in direction.iteritems():
-            name = name.replace(key,val)
-    if name in expand_addr:
-        newname = expand_addr[name]
-#        print name,' ----> ',newname
-        return (newname)
-    #replace 1st with 'First' etc.
-    name_list = name.split()
-    for items in name_list:
-        if items in street_num:
-            for key,val in street_num.iteritems():
-                name = name.replace(key,val)
-        
-    last_word = name.split()[-1]
-    if last_word in mapping_addr:
-        #get the words except the last one
-        for n in range(len(name.split())-1):
-            newname += name.split()[n]
-            newname +=' '
-        newname += mapping_addr[last_word]
-#        print name,' ----> ',newname
-        return newname
-    else:
-        return name
-
-
-#update the city names using the 'mapping_city' and 'expand_city' 
-#dictionaries
-
-def update_city_name(name,mapping):
-    new_name=''
-    if name in mapping_city: 
-        new_name = mapping_city[name]
-#        print name,' ----> ',repr(new_name)
-        return repr(new_name)
-    else:
-        return repr(name)
-
-#update the 9-digit postcodes to 5-digit
-
-def update_postcode(postcode):
-    if POSTCODE.match(postcode):
-        return postcode
-    elif postcode.split()[0] == 'CA':
-#        print postcode,' ---->',postcode.split()[1]
-        return (postcode.split()[1])
-    else:
-#        print postcode,' ----> ',postcode.split('-')[0]
-        return (postcode.split('-')[0])
-    
-
-#update the phone number to the standard format (xxx) xxx-xxxx 
-
-def update_phone(phonenum):
-    if PHONENUM.match(phonenum):
-        return phonenum
-    else:
-        new_num=''
-        count = 0
-        for i in range(len(phonenum)):
-        #get the first number
-            if (phonenum[i] in ['4','5','6','8']) and count == 0:
-                new_num += "("
-                new_num += phonenum[i]
-                count +=1
-            elif (count > 0) and (count <= 12):
-                if phonenum[i].isalnum():
-                    new_num += phonenum[i]
-                    count +=1
-                    if count == 3:
-                        new_num+= ") "
-                    if count == 6:
-                        if new_num[6].isdigit():
-                            new_num += "-"
-    if len(new_num) > 9 and len(new_num) <=14:
-#        print phonenum,' ----> ',new_num
-        return new_num    
-    else:
-#        print 'Invalid phone number: ',phonenum
-        return ('Invalid phone number')
 
 def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIELDS,
                   problem_chars=PROBLEMCHARS, default_tag_type='regular'):
@@ -356,13 +232,13 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
                 t_dict['type'] = val[0]
             # fix the street name,city name,postcode,phone
             if t.attrib['k'] == 'addr:street':
-                t_dict['value'] = update_addr_name(t.attrib['v'],mapping_addr)
+                t_dict['value'] = clean.update_addr_name(t.attrib['v'])
             elif t.attrib['k'] == 'addr:city':
-                t_dict['value'] = update_city_name(t.attrib['v'],mapping_city)
+                t_dict['value'] = clean.update_city_name(t.attrib['v'])
             elif t.attrib['k'] == 'addr:postcode':
-                t_dict['value'] = update_postcode(t.attrib['v'])
+                t_dict['value'] = clean.update_postcode(t.attrib['v'])
             elif t.attrib['k'] == 'phone':
-                t_dict['value'] = update_phone(t.attrib['v'])
+                t_dict['value'] = clean.update_phone(t.attrib['v'])
             else:
                 t_dict['value'] = t.attrib['v']
             tags.append(t_dict)
@@ -384,13 +260,13 @@ def shape_element(element, node_attr_fields=NODE_FIELDS, way_attr_fields=WAY_FIE
                 t_dict['type'] = val[0]
             # fix the street name,city name,postcode,phone
             if t.attrib['k'] == 'addr:street':
-                t_dict['value'] = update_addr_name(t.attrib['v'],mapping_addr)
+                t_dict['value'] = clean.update_addr_name(t.attrib['v'])
             elif t.attrib['k'] == 'addr:city':
-                t_dict['value'] = update_city_name(t.attrib['v'],mapping_city)
+                t_dict['value'] = clean.update_city_name(t.attrib['v'])
             elif t.attrib['k'] == 'addr:postcode':
-                t_dict['value'] = update_postcode(t.attrib['v'])
+                t_dict['value'] = clean.update_postcode(t.attrib['v'])
             elif t.attrib['k'] == 'phone':
-                t_dict['value'] = update_phone(t.attrib['v'])
+                t_dict['value'] = clean.update_phone(t.attrib['v'])
             else:
                 t_dict['value'] = t.attrib['v']
             tags.append(t_dict)
