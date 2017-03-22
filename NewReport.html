@@ -21277,50 +21277,10 @@ RK5CYII=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Abbreviated-Street-Names">Abbreviated Street Names<a class="anchor-link" href="#Abbreviated-Street-Names">&#182;</a></h2><p>I was able to find most of the inconsistencies in the street names of the sample.osm file using print statements in data.py. To clean the abbreviated street names I used dictionaries for look-ups. Here is the snippet of the code used to clean the street names and the resulting fixed names.</p>
+<h2 id="Abbreviated-Street-Names">Abbreviated Street Names<a class="anchor-link" href="#Abbreviated-Street-Names">&#182;</a></h2><p>I was able to find most of the inconsistencies in the street names of the sample.osm file using print statements in data.py. To clean the abbreviated street names I used dictionaries for look-ups. The function 'update_addr_name' is implemented in file clean.py. It takes in the street name as input and returns the cleaned street name.</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">update_addr_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
-    <span class="n">newname</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="c1">#replace N with North,S with South etc.</span>
-    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">direction_addr</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">direction</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">expand_addr</span><span class="p">:</span>
-        <span class="n">newname</span> <span class="o">=</span> <span class="n">expand_addr</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-        <span class="k">print</span> <span class="n">name</span><span class="p">,</span><span class="s1">&#39; ----&gt; &#39;</span><span class="p">,</span><span class="n">newname</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">newname</span><span class="p">)</span>
-    <span class="c1">#replace 1st with &#39;First&#39; etc.</span>
-    <span class="n">name_list</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">name_list</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">street_num</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">street_num</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
-        
-    <span class="n">last_word</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">last_word</span> <span class="ow">in</span> <span class="n">mapping_addr</span><span class="p">:</span>
-        <span class="c1">#get the words except the last one</span>
-        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">newname</span> <span class="o">+=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">n</span><span class="p">]</span>
-            <span class="n">newname</span> <span class="o">+=</span><span class="s1">&#39; &#39;</span>
-        <span class="n">newname</span> <span class="o">+=</span> <span class="n">mapping_addr</span><span class="p">[</span><span class="n">last_word</span><span class="p">]</span>
-        <span class="k">print</span> <span class="n">name</span><span class="p">,</span><span class="s1">&#39; ----&gt; &#39;</span><span class="p">,</span><span class="n">newname</span>
-        <span class="k">return</span> <span class="n">newname</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">name</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -21340,102 +21300,7 @@ Meridian Ave  ----&gt;  Meridian Avenue
 North McCarthy Blvd  ----&gt;  North McCarthy Boulevard
 Foxworthy Ave  ----&gt;  Foxworthy Avenue
 Saratoga Los Gatos Rd  ----&gt;  Saratoga Los Gatos Road
-Saratoga Los Gatos Rd  ----&gt;  Saratoga Los Gatos Road
-Perivale Ct  ----&gt;  Perivale Court
-Monroe St  ----&gt;  Monroe Street
-Wolfe Rd  ----&gt;  Wolfe Road
-East Duane Ave  ----&gt;  East Duane Avenue
-West Westashington Ave  ----&gt;  West Westashington Avenue
-Silver Creek Valley Rd  ----&gt;  Silver Creek Valley Road
-Samaritan Dr  ----&gt;  Samaritan Drive
-Monterey Hwy  ----&gt;  Monterey Highway
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Westfield Ave  ----&gt;  Westfield Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Greenbriar Ave  ----&gt;  Greenbriar Avenue
-Branham Ln  ----&gt;  Branham Lane
-Berryessa Rd  ----&gt;  Berryessa Road
-Los Gatos Blvd  ----&gt;  Los Gatos Boulevard
-Los Gatos Blvd  ----&gt;  Los Gatos Boulevard
-Meridian Ave  ----&gt;  Meridian Avenue
-Berryessa Rd  ----&gt;  Berryessa Road
-Quimby Rd  ----&gt;  Quimby Road
-Stevens Creek Blvd  ----&gt;  Stevens Creek Boulevard
-Vista Montaña  ----&gt;  Vista Montana
-1425 E Dunne Ave  ----&gt;  1425 E Dunne Avenue
-Fountain Oaks Dr  ----&gt;  Fountain Oaks Drive
-Homestead Rd  ----&gt;  Homestead Road
-Blake Ave  ----&gt;  Blake Avenue
-Gaundabert Ln  ----&gt;  Gaundabert Lane
-North Blaney Ave  ----&gt;  North Blaney Avenue
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt. Hamilton Rd  ----&gt;  Mt. Hamilton Road
-San Antonio Valley Rd  ----&gt;  San Antonio Valley Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-San Antonio Valley Rd  ----&gt;  San Antonio Valley Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Samaritan Dr  ----&gt;  Samaritan Drive
-Samaritan Dr  ----&gt;  Samaritan Drive
-Samaritan Dr  ----&gt;  Samaritan Drive
-Samaritan Dr  ----&gt;  Samaritan Drive
-Cabrillo Ave  ----&gt;  Cabrillo Avenue
-Mission College Blvd  ----&gt;  Mission College Boulevard
-Seaboard Ave  ----&gt;  Seaboard Avenue
-McCarthy Blvd  ----&gt;  McCarthy Boulevard
-Stevens Creek Blvd  ----&gt;  Stevens Creek Boulevard
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Los Gatos Blvd  ----&gt;  Los Gatos Boulevard
-Los Gatos Blvd  ----&gt;  Los Gatos Boulevard
-Los Gatos Blvd  ----&gt;  Los Gatos Boulevard
-Los Gatos Blvd  ----&gt;  Los Gatos Boulevard
-Los Gatos Blvd  ----&gt;  Los Gatos Boulevard
-Saratoga Ave  ----&gt;  Saratoga Avenue
-Linwood Dr  ----&gt;  Linwood Drive
-The Alameda Ave  ----&gt;  The Alameda Avenue
-North McCarthy Blvd  ----&gt;  North McCarthy Boulevard
-Palm Valley Blvd  ----&gt;  Palm Valley Boulevard
-Palm Valley Blvd  ----&gt;  Palm Valley Boulevard
-Palm Valley Blvd  ----&gt;  Palm Valley Boulevard
-Palm Valley Blvd  ----&gt;  Palm Valley Boulevard
-Casa Verde St  ----&gt;  Casa Verde Street
-Monroe St  ----&gt;  Monroe Street
-Palm Valley Blvd  ----&gt;  Palm Valley Boulevard
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-Mt Hamilton Rd  ----&gt;  Mount Hamilton Road
-West Maude Ave  ----&gt;  West Maude Avenue
-Samaritan Dr  ----&gt;  Samaritan Drive
-Los Gatos Blvd  ----&gt;  Los Gatos Boulevard
-Hillsdale Ave  ----&gt;  Hillsdale Avenue
-Vista Montaña  ----&gt;  Vista Montana</code></pre>
+Saratoga Los Gatos Rd  ----&gt;  Saratoga Los Gatos Road</code></pre>
 
 </div>
 </div>
@@ -21445,30 +21310,11 @@ Vista Montaña  ----&gt;  Vista Montana</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Inconsistent-City-Names">Inconsistent City Names<a class="anchor-link" href="#Inconsistent-City-Names">&#182;</a></h2><p>To clean the city names I used dictionary 'mapping_city'  for look-ups to match city names with accent on letters, lower case etc. Here is the snippet of the code with a part of its output.</p>
+<h2 id="Inconsistent-City-Names">Inconsistent City Names<a class="anchor-link" href="#Inconsistent-City-Names">&#182;</a></h2><p>To clean the city names I used dictionary 'mapping_city'  for look-ups to match city names with accent on letters, lower case etc. The function 'update_city_name' is implemented in file clean.py.</p>
+<p>Here is a sample of the output:</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">update_city_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">mapping</span><span class="p">):</span>
-    <span class="n">new_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">mapping_city</span><span class="p">:</span> 
-        <span class="n">new_name</span> <span class="o">=</span> <span class="n">mapping_city</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-        <span class="k">print</span> <span class="n">name</span><span class="p">,</span><span class="s1">&#39; ----&gt; &#39;</span><span class="p">,</span><span class="nb">repr</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -21479,16 +21325,7 @@ Vista Montaña  ----&gt;  Vista Montana</code></pre>
 <pre><code>San José  ----&gt;  'San Jose'
 san jose  ----&gt;  'San Jose'
 San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-san jose  ----&gt;  'San Jose'
 Los Gatos, CA  ----&gt;  'Los Gatos'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-san jose  ----&gt;  'San Jose'
-san Jose  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
 San José  ----&gt;  'San Jose'
 san Jose  ----&gt;  'San Jose'
 sunnyvale  ----&gt;  'Sunnyvale'
@@ -21497,14 +21334,6 @@ San José  ----&gt;  'San Jose'
 San José  ----&gt;  'San Jose'
 SUnnyvale  ----&gt;  'Sunnyvale'
 cupertino  ----&gt;  'Cupertino'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
-San José  ----&gt;  'San Jose'
 Los Gato  ----&gt;  'Los Gatos'</code></pre>
 
 </div>
@@ -21515,31 +21344,11 @@ Los Gato  ----&gt;  'Los Gatos'</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Inconsistent-Postcodes">Inconsistent Postcodes<a class="anchor-link" href="#Inconsistent-Postcodes">&#182;</a></h2><p>Some of the postcodes had 9-digits, some had 5-digits and some had the state name in them. To clean up I used regex (POSTCODE = re.compile(r'[9][0-9]{4}$') to match the 5-digit postcode and changed the remaining postcodes to 5-digits to be consistent. The state name was stripped from the postcode and only the postcode was retained. Here is a snippet of the code and a part of its output.</p>
+<h2 id="Inconsistent-Postcodes">Inconsistent Postcodes<a class="anchor-link" href="#Inconsistent-Postcodes">&#182;</a></h2><p>Some of the postcodes had 9-digits, some had 5-digits and some had the state name in them. I used regex to change the postcodes to 5-digit postcodes to be consistent. The state name was stripped from the postcode and only the postcode was retained. This function 'update_postcode' is implemented in clean.py</p>
+<p>Here is a sample of the output:</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">update_postcode</span><span class="p">(</span><span class="n">postcode</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">POSTCODE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">postcode</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">postcode</span>
-    <span class="k">elif</span> <span class="n">postcode</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CA&#39;</span><span class="p">:</span>
-        <span class="k">print</span> <span class="n">postcode</span><span class="p">,</span><span class="s1">&#39; ----&gt;&#39;</span><span class="p">,</span><span class="n">postcode</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">postcode</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span> <span class="n">postcode</span><span class="p">,</span><span class="s1">&#39; ----&gt; &#39;</span><span class="p">,</span><span class="n">postcode</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">postcode</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -21550,16 +21359,9 @@ Los Gato  ----&gt;  'Los Gatos'</code></pre>
 <pre><code>95014-2029  ----&gt;  95014
 95014-2405  ----&gt;  95014
 95037-3635  ----&gt;  95037
-95037-4530  ----&gt;  95037
-95014-2456  ----&gt;  95014
-95014-2130  ----&gt;  95014
-95037-9221  ----&gt;  95037
 95014-2225  ----&gt;  95014
 CA 95054  ----&gt; 95054
 95014-2225  ----&gt;  95014
-95014-2522  ----&gt;  95014
-95014-2522  ----&gt;  95014
-95014-2522  ----&gt;  95014
 95014-2522  ----&gt;  95014
 95014-2522  ----&gt;  95014
 CA 95110  ----&gt; 95110
@@ -21575,50 +21377,11 @@ CA 95110  ----&gt; 95110
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Inconsistent-Phone-Numbers">Inconsistent Phone Numbers<a class="anchor-link" href="#Inconsistent-Phone-Numbers">&#182;</a></h2><p>The phone numbers were in many different formats and they were made into a standard format: (xxx) xxx-xxxx  I used a regex function PHONENUM =re.compile(r'[4,5,6,8][0-9]{2}-[0-9]{3}-[0-9]{4}$') to get all the phone numbers which were in standard form. The rest of the phone numbers were parsed with extra +1,'.' etc removed and made into standard form.
-Here is a snippet of the code and its output. There were two wrong phone numbers - one with just '+1' and the second with just 7 digits. Both were tagged 'Invalid phone number'.</p>
+<h2 id="Inconsistent-Phone-Numbers">Inconsistent Phone Numbers<a class="anchor-link" href="#Inconsistent-Phone-Numbers">&#182;</a></h2><p>The phone numbers were in many different formats and they were made into a standard format: (xxx) xxx-xxxx. I used regex to get all the phone numbers which were in standard form. The rest of the phone numbers were parsed with extra +1,'.' etc removed and made into standard form. This function 'update_phonenum' is implemented in clean.py file.</p>
+<p>Here is a sample of the output:</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">update_phone</span><span class="p">(</span><span class="n">phonenum</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">PHONENUM</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">phonenum</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">phonenum</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">new_num</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">phonenum</span><span class="p">)):</span>
-        <span class="c1">#get the first number</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">phonenum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">,</span><span class="s1">&#39;5&#39;</span><span class="p">,</span><span class="s1">&#39;6&#39;</span><span class="p">,</span><span class="s1">&#39;8&#39;</span><span class="p">])</span> <span class="ow">and</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">new_num</span> <span class="o">+=</span> <span class="s2">&quot;(&quot;</span>
-                <span class="n">new_num</span> <span class="o">+=</span> <span class="n">phonenum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">count</span> <span class="o">+=</span><span class="mi">1</span>
-            <span class="k">elif</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">count</span> <span class="o">&lt;=</span> <span class="mi">12</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">phonenum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">isalnum</span><span class="p">():</span>
-                    <span class="n">new_num</span> <span class="o">+=</span> <span class="n">phonenum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                    <span class="n">count</span> <span class="o">+=</span><span class="mi">1</span>
-                    <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                        <span class="n">new_num</span><span class="o">+=</span> <span class="s2">&quot;) &quot;</span>
-                    <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">new_num</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
-                            <span class="n">new_num</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_num</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">9</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_num</span><span class="p">)</span> <span class="o">&lt;=</span><span class="mi">14</span><span class="p">:</span>
-        <span class="k">print</span> <span class="n">phonenum</span><span class="p">,</span><span class="s1">&#39; ----&gt; &#39;</span><span class="p">,</span><span class="n">new_num</span>
-        <span class="k">return</span> <span class="n">new_num</span>    
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s1">&#39;Invalid phone number: &#39;</span><span class="p">,</span><span class="n">phonenum</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;Invalid phone number&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -21627,44 +21390,15 @@ Here is a snippet of the code and its output. There were two wrong phone numbers
 <div class="text_cell_render border-box-sizing rendered_html">
 
 <pre><code>+1 408 736 6859  ----&gt;  (408) 736-6859
-4087382177  ----&gt;  (408) 738-2177
-+1 408 733 1304  ----&gt;  (408) 733-1304
-+1 408 789 0037  ----&gt;  (408) 789-0037
-8882624386  ----&gt;  (888) 262-4386
-4086549000  ----&gt;  (408) 654-9000
-4084869727  ----&gt;  (408) 486-9727
-4084533133  ----&gt;  (408) 453-3133
-4089889100  ----&gt;  (408) 988-9100
-(408) 277-4625  ----&gt;  (408) 277-4625
-+1-408-298-9731  ----&gt;  (408) 298-9731
-+1.408.559.6900  ----&gt;  (408) 559-6900
-+1 408-778-0551  ----&gt;  (408) 778-0551
-4088718765  ----&gt;  (408) 871-8765
-4084507990  ----&gt;  (408) 450-7990
-4087271419  ----&gt;  (408) 727-1419
-+1 (408) 364-3700  ----&gt;  (408) 364-3700
-+1 408 739 7717  ----&gt;  (408) 739-7717
-(408) 730-5510  ----&gt;  (408) 730-5510
-+ 408 980 6400  ----&gt;  (408) 980-6400
-+1 408 452 1060  ----&gt;  (408) 452-1060
-+1 408 774 1889  ----&gt;  (408) 774-1889
-+1 408 294 2558  ----&gt;  (408) 294-2558
-+1-408-423-8502  ----&gt;  (408) 423-8502
 1 408 732 4222  ----&gt;  (408) 732-4222
 4087208538  ----&gt;  (408) 720-8538
-4088300094  ----&gt;  (408) 830-0094
-4082436868  ----&gt;  (408) 243-6868
-4087398960  ----&gt;  (408) 739-8960
-4087067979  ----&gt;  (408) 706-7979
+4088300094  ----&gt;  (408) 830-0092
 +1 408 245 2253  ----&gt;  (408) 245-2253
 +1 408 245 9500  ----&gt;  (408) 245-9500
 Invalid phone number:  2924779
 4082861412  ----&gt;  (408) 286-1412
 +1-408-975-9371  ----&gt;  (408) 975-9371
 +14082635526  ----&gt;  (408) 263-5526
-+1 408-293-8810  ----&gt;  (408) 293-8810
-+1 408 378 0622  ----&gt;  (408) 378-0622
-+1-408-263-6788  ----&gt;  (408) 263-6788
 +1 408 246 1484  ----&gt;  (408) 246-1484
 +14082719504  ----&gt;  (408) 271-9504
 Invalid phone number:  +1</code></pre>
@@ -22139,7 +21873,7 @@ sikh              1</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Addtional-Suggestions">Addtional Suggestions<a class="anchor-link" href="#Addtional-Suggestions">&#182;</a></h3><p>It would be great to include local farmer's markets and ice skating information.</p>
-<p>To improve the quality of the data, I suggest that there should a standard format that the users can enter the data or the system should reject it. We can use scripts to check the format or flag error message when incorrect format is entered by the user.</p>
+<p>To improve the quality of the data, I suggest that there should a standard format that the contributors can enter the data or the system should reject it. We can use scripts to check the format or flag error message when incorrect format is entered by the contributor. This may not be easy to implement initially, since there is a chance that the contributor may stop entering the data. But we could attract the contributor to keep contributing by displaying the rank of the contributors who enter the most data. Also, the contributor may be a user of the map too and would find it much easier to retrieve error-free data.</p>
 
 </div>
 </div>
