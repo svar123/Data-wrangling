@@ -9,7 +9,8 @@ sanjose.db      : database of csv files
 san-jose_california.osm : osm file
 sample10.osm    : sample osm file
 csv_db.py       : python file to generate database from csv files
-data.py         : python file to parse,clean data and build csf files
+data.py         : python file that builds csf files
+clean.py        : python file that cleans the data
 
 csv files created:
 -------------------
